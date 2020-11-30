@@ -1,0 +1,48 @@
+From 3dfba69435a999f1a842484bd74afc63d395fd56 Mon Sep 17 00:00:00 2001
+From: Mathieu Parent <math.parent@gmail.com>
+Date: Thu, 1 Aug 2019 21:07:05 +0200
+Subject: [PATCH] Fix manpage warning
+
+LC_ALL=en_US.UTF-8 MANROFFSEQ='' MANWIDTH=80 \
+  man --warnings -E UTF-8 -l -Tutf8 -Z man1/pear.1 > /dev/null
+
+Outputs:
+troff: <standard input>:230: warning: macro 'PS' not defined
+
+We use "Example begin" (.EX)/"Example end" (.EE) instead, see groff_man(7).
+
+Forwarded: https://github.com/pear/pear-core/pull/95
+---
+ man1/pear.1 | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/man1/pear.1 b/man1/pear.1
+index a17a421c..a7f9555a 100644
+--- a/man1/pear.1
++++ b/man1/pear.1
+@@ -227,16 +227,19 @@ The user configuration.
+ .SH SEE ALSO
+ .TP
+ To list all options, use
+-.PS
++.EX
+ pear help options
++.EE
+ .TP
+ To list all command shortcuts, use
+-.PS
++.EX
+ pear help shortcuts
++.EE
+ .TP
+ to get the help for the specified command, use
+-.PS
++.EX
+ pear help \fIcommand\fP
++.EE
+ .TP
+ Documentation for PEAR can be found at
+ .PD 0
+-- 
+2.20.1
+

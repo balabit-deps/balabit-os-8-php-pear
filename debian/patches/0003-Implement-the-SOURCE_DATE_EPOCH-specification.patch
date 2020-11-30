@@ -1,0 +1,101 @@
+From 1e355c857385052d8f06e09fc5e7cb85d4b6fb13 Mon Sep 17 00:00:00 2001
+From: Mathieu Parent <math.parent@gmail.com>
+Date: Thu, 1 Aug 2019 22:58:58 +0200
+Subject: [PATCH] Implement the SOURCE_DATE_EPOCH specification
+
+See https://reproducible-builds.org/specs/source-date-epoch/
+
+This is necessary to have reproducible builds.
+
+Bug-Debian: https://bugs.debian.org/750697
+Forwarded: https://github.com/pear/pear-core/pull/96
+---
+ PEAR.php          | 22 ++++++++++++++++++++++
+ PEAR/Registry.php | 10 +++++-----
+ 2 files changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/PEAR.php b/PEAR.php
+index cf9a02de..fee6638f 100644
+--- a/PEAR.php
++++ b/PEAR.php
+@@ -766,6 +766,28 @@ class PEAR
+ 
+         return @dl('php_'.$ext.$suffix) || @dl($ext.$suffix);
+     }
++
++    /**
++     * Get SOURCE_DATE_EPOCH environment variable
++     * See https://reproducible-builds.org/specs/source-date-epoch/
++     *
++     * @return int
++     * @access public
++     */
++    static function getSourceDateEpoch()
++    {
++        if ($source_date_epoch = getenv('SOURCE_DATE_EPOCH')) {
++            if (preg_match('/^\d+$/', $source_date_epoch)) {
++                return (int) $source_date_epoch;
++            } else {
++            //  "If the value is malformed, the build process SHOULD exit with a non-zero error code."
++            self::raiseError("Invalid SOURCE_DATE_EPOCH: $source_date_epoch");
++            exit(1);
++            }
++        } else {
++            return time();
++        }
++    }
+ }
+ 
+ function _PEAR_call_destructors()
+diff --git a/PEAR/Registry.php b/PEAR/Registry.php
+index 4518cd0d..08987c61 100644
+--- a/PEAR/Registry.php
++++ b/PEAR/Registry.php
+@@ -1008,7 +1008,7 @@ class PEAR_Registry extends PEAR
+         if ($lastmodified) {
+             $info['_lastmodified'] = $lastmodified;
+         } else {
+-            $info['_lastmodified'] = time();
++            $info['_lastmodified'] = self::getSourceDateEpoch();
+         }
+ 
+         fwrite($fp, serialize($info));
+@@ -1300,7 +1300,7 @@ class PEAR_Registry extends PEAR
+             return false;
+         }
+ 
+-        $info['_lastmodified'] = time();
++        $info['_lastmodified'] = self::getSourceDateEpoch();
+         fwrite($fp, serialize($info));
+         $this->_closePackageFile($fp);
+         if (isset($info['filelist'])) {
+@@ -1354,7 +1354,7 @@ class PEAR_Registry extends PEAR
+             return false;
+         }
+ 
+-        $info['_lastmodified'] = time();
++        $info['_lastmodified'] = self::getSourceDateEpoch();
+         fwrite($fp, serialize($info));
+         $this->_closePackageFile($fp);
+         $this->_rebuildFileMap();
+@@ -1382,7 +1382,7 @@ class PEAR_Registry extends PEAR
+         if (is_object($info)) {
+             $info = $info->toArray();
+         }
+-        $info['_lastmodified'] = time();
++        $info['_lastmodified'] = self::getSourceDateEpoch();
+ 
+         $newinfo = $info;
+         if ($merge) {
+@@ -1418,7 +1418,7 @@ class PEAR_Registry extends PEAR
+ 
+         $save = $info;
+         $info = $save->getArray(true);
+-        $info['_lastmodified'] = time();
++        $info['_lastmodified'] = self::getSourceDateEpoch();
+         fwrite($fp, serialize($info));
+         $this->_closePackageFile($fp);
+         $this->_rebuildFileMap();
+-- 
+2.20.1
+
