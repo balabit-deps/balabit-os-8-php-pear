@@ -1,3 +1,16 @@
+php-pear (1:1.10.9+submodules+notgz-1ubuntu0.20.04.2) focal-security; urgency=medium
+
+  * SECURITY UPDATE: directory traversal attack in Archive_Tar
+    - debian/patches/CVE-2020-36193-1.patch: disallow symlinks to
+      out-of-path filenames in submodules/Archive_Tar/Archive/Tar.php.
+    - debian/patches/CVE-2020-36193-2.patch: fix out-of-path check for
+      virtual relative symlink in submodules/Archive_Tar/Archive/Tar.php.
+    - debian/patches/CVE-2020-36193-3.patch: PHP compat fix in
+      submodules/Archive_Tar/Archive/Tar.php..
+    - CVE-2020-36193
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Thu, 04 Feb 2021 10:37:22 -0500
+
 php-pear (1:1.10.9+submodules+notgz-1ubuntu0.20.04.1) focal-security; urgency=medium
 
   * SECURITY UPDATE: unserialization attack in Archive_Tar

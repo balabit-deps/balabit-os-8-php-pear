@@ -2,3 +2,6 @@
 0002-Fix-manpage-warning.patch
 0003-Implement-the-SOURCE_DATE_EPOCH-specification.patch
 CVE-2020-2894x.patch
+CVE-2020-36193-1.patch
+CVE-2020-36193-2.patch
+CVE-2020-36193-3.patch
