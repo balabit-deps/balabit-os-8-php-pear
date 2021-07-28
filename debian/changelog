@@ -1,3 +1,12 @@
+php-pear (1:1.10.9+submodules+notgz-1ubuntu0.20.04.3) focal-security; urgency=medium
+
+  * SECURITY UPDATE: incorrect symlink extraction
+    - debian/patches/CVE-2021-32610.patch: properly fix symbolic link path
+      traversal in submodules/Archive_Tar/Archive/Tar.php.
+    - CVE-2021-32610
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Wed, 28 Jul 2021 10:48:22 -0400
+
 php-pear (1:1.10.9+submodules+notgz-1ubuntu0.20.04.2) focal-security; urgency=medium
 
   * SECURITY UPDATE: directory traversal attack in Archive_Tar
